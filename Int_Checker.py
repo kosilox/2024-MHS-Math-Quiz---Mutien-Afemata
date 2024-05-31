@@ -47,5 +47,9 @@ secret_number = random.randint(1, 180)
 
 num_questions = int_check("How many questions would you like to solve? ",
                           low=1, exit_code="")
+if num_questions == "":
+    mode = "infinite"
+    num_questions = 5
+    print(f"{mode} mode activated")
 
 print("program continues")
