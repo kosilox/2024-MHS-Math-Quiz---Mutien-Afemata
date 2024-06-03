@@ -17,18 +17,16 @@ def string_checker(user_response, valid_ans):
 
         return "invalid"
 
+
 # automated testing is below in the form (test_case, expected_value)
 to_test = [
 
-    ('Addition', 'addition'),
-    ('SUBTRACTION', 'subtraction'),
-    ('division', 'division'),
-    ('A', 'addition'),
-    ('S', 'subtraction'),
-    ('XXX', 'xxx'),
-    ('M', 'multiplication'),
-    ('random', 'invalid'),
-
+    ("yes", "yes"),
+    ("Y", "yes"),
+    ("No", "no"),
+    ("N", "no"),
+    ("YeS", "yes"),
+    ("Maybe", "invalid"),
 ]
 
 # run tests!
