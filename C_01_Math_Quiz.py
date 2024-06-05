@@ -2,18 +2,19 @@ import random
 
 # checks user answer and compares to real answer
 def ans_compare(user, ans):
-    # if the user and the answer is the same, it's a win
+    # if the user and the answer is the same, it's correct
     if user == ans:
-        quiz_result = "win"
-    # if not the same, then it's a loss
+        quiz_result = "correct"
+    # if not the same, then it's incorrect
     else:
-        quiz_result = "lose"
+        quiz_result = "incorrect"
     return quiz_result
 
 
+# checks if user input is a valid answer
 def string_checker(question, valid_ans=('yes', 'no')):
 
-    error = (f"Please enter a valid option from the following list: {valid_ans}")
+    error = f"Please enter a valid option from the following list: {valid_ans}"
 
     while True:
 
@@ -42,15 +43,12 @@ def int_check(question, low=None, high=None, exit_code=None):
         error = "\nPlease enter an integer\n"
 
     # if the number needs to be more than an
-    # integer (ie: rounds / ' high number '
+    # integer (ie: questions )
     elif low is not None and high is None:
         error = (f"Please enter an integer that is "
                  f"more than / equal to {low}")
-
-    # if the number needs to between low & high
     else:
-        error = (f"Please enter an integer that "
-                 f"is between {low} and {high} (inclusive)")
+        error = "\nPlease enter an integer\n"
 
     while True:
         response = input(question).lower()
@@ -63,10 +61,6 @@ def int_check(question, low=None, high=None, exit_code=None):
             response = int(response)
             # Check the integer is not too low...
             if low is not None and response < low:
-                print(error)
-
-            # check response is more than the low number
-            elif high is not None and response > high:
                 print(error)
 
             # if response is valid, return it
@@ -87,7 +81,9 @@ then choose any of the operations which will be set to your question:
 
  [addition, subtraction, multiplication, division]
  
-You can press <enter> for a mix of all of these. 
+You can type "everything" or "e" for a mix of all of these.
+(you can also type the first letter of operations to choose them).
+ 
 Press <xxx> to exit the quiz at anytime.
 
 Your goal is to try to guess as many correct as possible,
@@ -100,7 +96,7 @@ Good luck.
 
 
 # main routine starts here
-# initialise game variables
+# initialise question variables
 
 operations = ["addition", "subtraction", "multiplication", "division", "everything"]
 quiz_history = []
@@ -128,27 +124,27 @@ if num_questions == "":
     mode = "infinite"
     num_questions = 5
 
-# ask the choice of operations
-# user wants to solve for each question
+# ask what operations user wants to solve for each question
 operation_mode = string_checker("\nChoose the operation: "
                                "(type 'e' for all operations) ",
                                 operations)
 
-# if user inputs <enter> then pass straight into quiz loop
+# if user inputs 'e' or 'everything' then pass straight into quiz loop
 if operation_mode == "everything":
     pass
 
-print(operation_mode)
+print("you have chosen", operation_mode)
+
 # quiz loop starts here
 while questions_answered < num_questions:
 
     # question headings (based on mode)
     if mode == "infinite":
-        rounds_heading = f"\n Question {questions_answered + 1} (Infinite mode)"
+        questions_heading = f"\n Question {questions_answered + 1} (Infinite mode)"
     else:
-        rounds_heading = f"\n Question {questions_answered + 1} of {num_questions}"
+        questions_heading = f"\n Question {questions_answered + 1} of {num_questions}"
 
-    print(rounds_heading)
+    print(questions_heading)
     print()
 
     # initialize variables
@@ -156,7 +152,7 @@ while questions_answered < num_questions:
     b = random.randint(1, 10)
     c = 0
     user_input = ""
-    feedback = ""
+    quiz_question = ""
 
     # mixed_operations acts as a 2nd operation mode if
     # user wants all operation in their questions
@@ -169,25 +165,25 @@ while questions_answered < num_questions:
 
     if operation_mode == "addition" or mixed_operations == "addition":
         c = (a * a) + (b * b)
-        feedback = f"{a * a} + {b * b} = ?"
+        quiz_question = f"{a * a} + {b * b} = ?"
 
     if operation_mode == "subtraction" or mixed_operations == "subtraction":
         c = (a * a) - (b * b)
-        feedback = f"{a * a} - {b * b} = ?"
+        quiz_question = f"{a * a} - {b * b} = ?"
 
     if operation_mode == "multiplication" or mixed_operations == "multiplication":
         c = (a * b)
-        feedback = f"{a} * {b} = ?"
+        quiz_question = f"{a} * {b} = ?"
 
     if operation_mode == "division" or mixed_operations == "division":
         c = (a * b) / a
-        feedback = f"{a * b} / {a} = ?"
+        quiz_question = f"{a * b} / {a} = ?"
 
     # FOR TESTING PURPOSES
     print(f"answer = {c}")
 
     # shows user the question
-    print(feedback)
+    print(quiz_question)
 
     # get user answer
     user_input = int_check("Solve: ", exit_code="xxx")
@@ -198,48 +194,47 @@ while questions_answered < num_questions:
 
     result = ans_compare(user_input, c)
 
-    # adjust game lost / game won counters and add results to game history
-    if result == "win":
+    # adjust question incorrect / question correct counters
+    # and add results to quiz history
+
+    if result == "correct":
         quiz_feedback = "You guessed it correct!"
-    if result == "lose":
+    if result == "incorrect":
         incorrect_guesses += 1
         quiz_feedback = f"Wrong, the answer is {c}"
 
-    # set up question feedback and output it to user
-    # add it to the game history list (include the question number)
-    question_feedback = f"User: {user_input} | Question: {feedback} \nAnswer: {c} | Result: {quiz_feedback}\n"
-    history_item = f"Question: {questions_answered + 1} - {question_feedback}"
+    # set up question result and output it to user
+    # add it to the question history list (include the question number)
+    question_result = f"User: {user_input} | Question: {quiz_question} \nAnswer: {c} | Result: {quiz_feedback}\n"
+    history_item = f"Question: {questions_answered + 1} - {question_result}"
 
-    print(question_feedback)
+    print(question_result)
     quiz_history.append(history_item)
 
     questions_answered += 1
 
-    # if users are in infinite mode, increase number of rounds!
+    # if users are in infinite mode, increase number of questions!
     if mode == "infinite":
         num_questions += 1
 
 # quiz loops ends here
 
 if questions_answered > 0:
-    # game history / statistics area
-
+    # quiz history / statistics area
     # calculate statistics
     correct_guesses = questions_answered - incorrect_guesses
-    percent_won = correct_guesses / questions_answered * 100
-    percent_loss = incorrect_guesses / questions_answered * 100
-
+    percent_correct = correct_guesses / questions_answered * 100
+    percent_incorrect = incorrect_guesses / questions_answered * 100
 
     print("📈📈📈Game Statistics📈📈📈")
-    print(f"Wrong Guesses: {percent_loss:.2f} |\t"
-          f"Correct Guesses: {percent_won:.2f}\t")
+    print(f"Wrong Guesses: {percent_incorrect:.2f}% |\t"
+          f"Correct Guesses: {percent_correct:.2f}%\t")
 
-    # ask user if they want to see their game history and output it if requested.
+    # ask user if they want to see their quiz history and output it if requested.
     see_history = string_checker("\nDo you want to see your quiz history? ")
     if see_history == "yes":
         for item in quiz_history:
             print(f"\n{item}\n")
-
     print()
     print("Thanks for playing.")
 else:
