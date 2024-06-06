@@ -104,7 +104,7 @@ quiz_history = []
 questions_answered = 0
 incorrect_guesses = 0
 quiz_feedback = ""
-mode = "regular"
+question_mode = "regular"
 
 # quiz begins here
 print("Welcome to the MHS Arithmetic Math Quiz!")
@@ -121,7 +121,7 @@ num_questions = int_check("How many questions would you like? "
                           "(Press <enter> for infinite mode) ",
                           low=1, exit_code="")
 if num_questions == "":
-    mode = "infinite"
+    question_mode = "infinite"
     num_questions = 5
 
 # ask what operations user wants to solve for each question
@@ -139,7 +139,7 @@ print("you have chosen", operation_mode)
 while questions_answered < num_questions:
 
     # question headings (based on mode)
-    if mode == "infinite":
+    if question_mode == "infinite":
         questions_heading = f"\n Question {questions_answered + 1} (Infinite mode)"
     else:
         questions_heading = f"\n Question {questions_answered + 1} of {num_questions}"
@@ -179,16 +179,13 @@ while questions_answered < num_questions:
         c = (a * b) / a
         quiz_question = f"{a * b} / {a} = ?"
 
-    # FOR TESTING PURPOSES
-    print(f"answer = {c}")
-
     # shows user the question
     print(quiz_question)
 
     # get user answer
     user_input = int_check("Solve: ", exit_code="xxx")
 
-    # if user choice is the exit code, break the loop
+    # if user input is the exit code, break the loop
     if user_input == "xxx":
         break
 
@@ -196,7 +193,6 @@ while questions_answered < num_questions:
 
     # adjust question incorrect / question correct counters
     # and add results to quiz history
-
     if result == "correct":
         quiz_feedback = "You guessed it correct!"
     if result == "incorrect":
@@ -214,7 +210,7 @@ while questions_answered < num_questions:
     questions_answered += 1
 
     # if users are in infinite mode, increase number of questions!
-    if mode == "infinite":
+    if question_mode == "infinite":
         num_questions += 1
 
 # quiz loops ends here
@@ -236,7 +232,7 @@ if questions_answered > 0:
         for item in quiz_history:
             print(f"\n{item}\n")
     print()
-    print("Thanks for playing.")
+    print("You've reached the end of the MHS Math Quiz.")
 else:
     # if user didn't answer any questions
-    print("oops, you chickened out")
+    print("Oops, you chickened out and did not answer any questions.")
